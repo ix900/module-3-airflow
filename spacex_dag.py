@@ -20,15 +20,15 @@ prm = {}
 for rocket_type in ["all", "falcon1", "falcon9", "falconheavy"]:            
     prm.update({'rocket': rocket_type })
     t1 = BashOperator(
-        task_id="get_data", 
-        bash_command="python3 /root/airflow/dags/spacex/load_launches.py -y {{ execution_date.year }} -o /var/data {}".format("-r {{ params.rocket }}" if rocket_type!="all" else ""), 
+        task_id="get_data_{}".format(rocket_type), 
+        bash_command="python3 /root/airflow/dags/spacex/load_launches.py -y {} -o /var/data {}".format("{ execution_date.year }","-r {{ params.rocket }}" if rocket_type!="all" else ""), 
         params=prm,
         dag=dag
         
     )
 
     t2 = BashOperator(
-        task_id="print_data", 
+        task_id="print_data_{}".format(rocket_type), 
         bash_command="cat /var/data/year={{ execution_date.year }}/rocket={{ params.rocket }}/data.csv", 
         params=prm, # falcon1/falcon9/falconheavy
         dag=dag
