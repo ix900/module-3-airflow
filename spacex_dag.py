@@ -21,7 +21,7 @@ for rocket_type in ["all", "falcon1", "falcon9", "falconheavy"]:
     prm.update({'rocket': rocket_type })
     t1 = BashOperator(
         task_id="get_data_{}".format(rocket_type), 
-        bash_command="python3 /root/airflow/dags/spacex/load_launches.py -y {{ execution_date.year }} -o /var/data {r}".format(r = ("-r {{ params.rocket }}" if rocket_type!="all" else "")), 
+        bash_command="python3 /root/airflow/dags/spacex/load_launches.py -y {{ execution_date.year }} -o /var/data %s" % ("-r {{ params.rocket }}" if rocket_type!="all" else ""), 
         params=prm,
         dag=dag
         
